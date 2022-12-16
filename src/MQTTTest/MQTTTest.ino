@@ -22,7 +22,8 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 LiquidCrystal_I2C lcd(0x27,16,2);
 
-//add button data, cycles through numbers 0-9 for picking boxes in the tic tac toe game and picking options
+//add button jostick, cycles through numbers 0-9 for picking boxes in the tic tac toe game and picking options
+int xyzPins[] = {33,35,34}; //xyz pins
 
 void setup() {
  //setup lcd screen
@@ -31,6 +32,8 @@ void setup() {
  lcd.backlight();
  lcd.setCursor(0,0);
  lcd.print("START? (y=1/n=2)");
+ //setup joystick
+ pinMode(xyzPins[2], INPUT_PULLUP);
  // Set software serial baud to 115200;
  Serial.begin(115200);
  // connecting to a WiFi network
@@ -76,5 +79,10 @@ void callback(char *topic, byte *payload, unsigned int length) {
 void loop() 
 {
   client.loop();
+  int xVal = analogRead(xyzPins[0]);
+  int yVal = analogRead(xyzPins[1]);
+  int zVal = digitalRead(xyzPins[2]);
+  Serial.printf("X,Y,Z: %d,\t%d,\t%d\n", xVal, yVal, zVal);
+  
 
 }
