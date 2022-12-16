@@ -25,6 +25,8 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 //add button jostick, cycles through numbers 0-9 for picking boxes in the tic tac toe game and picking options
 int xyzPins[] = {33,35,34}; //xyz pins
 
+int joystickInput = 0; //int that will be changed throughout the program. For publishing later. 
+
 void setup() {
  //setup lcd screen
  Wire.begin(SDA, SCL);
@@ -83,6 +85,38 @@ void loop()
   int yVal = analogRead(xyzPins[1]);
   int zVal = digitalRead(xyzPins[2]);
   Serial.printf("X,Y,Z: %d,\t%d,\t%d\n", xVal, yVal, zVal);
-  
-
+  lcd.setCursor(0,1);
+  lcd.print("Input: ");
+  lcd.print(joystickInput);
+  delay(250);  
+  //92-113, use joystick to pick numbers between 0-8, makes sure joystock counter is between 0-8, all possible values for the board
+  if (xVal == 0) 
+  {
+    if (joystickInput <= 0)
+    {
+      joystickInput = 8;
+    }
+    else
+    {
+      joystickInput--;
+    }
+  }
+  if (xVal == 4095) 
+  {
+    if (joystickInput >= 8)
+    {
+      joystickInput = 0;
+    }
+    else
+    {
+      joystickInput++;
+    }
+  }
+  //if joystick is pointing upward, publish joystickInput int to mqttx
+  if (yVal == 0) 
+  {
+    char pub_out[1];
+    sprintf(pub_out,"%d",joystickInput);
+    client.publish("testConnect", pub_out);
+  }
 }
