@@ -5,7 +5,7 @@
 
 #define ADDRESS     "tcp://broker.emqx.io:1883"
 #define CLIENTID    "emqx_test"
-#define TOPIC       "testtopic/1"
+#define TOPIC       "testConnect"
 #define PAYLOAD     "Hello World TEST"
 #define QOS         1
 #define TIMEOUT     10000L
